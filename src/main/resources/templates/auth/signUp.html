@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.tymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+<title>교환일기 등록하기</title>
+<style>
+	.signUpContainer{
+		width:40%;
+		height: 100%;
+		border:0.1rem solid black;
+		margin:0 auto;
+		font-family: 'Nanum Myeongjo';
+		font-size:1rem;
+		padding:5%;
+	}
+	.signUpContainer label{
+		display:inline-block;
+		width:12vw;
+	}
+	.signUpContainer input{
+		width:15vw;
+		height: auto;
+		font-size:1rem;
+		border:0;
+	}
+	.imgBox{
+		width:15vw;
+		height: 15vw;
+		border:0.1rem solid black;
+		margin-left:12vw;
+	}
+	.imgBox img{
+	width:15vw;
+		height: 15vw;
+		object-fit:cover;
+	}
+	#pw{
+		width:100%;
+		text-align: center;
+	}
+	
+</style>
+</head>
+<body>
+<div class = "signUpContainer">
+	<p style="font-size:2rem;">교환일기 시작하기</p>
+	<form action="/auth/signUp" method="post" id = "signUpFrm" enctype ="multipart/form-data">
+		<label>이름</label><input type = "text" required name= "name" id=  "name"><br>
+		<label>생일</label><input type = "date" required name="birth" id="birth"><br>
+		<label>이메일</label><input type = "text" required name="email" id="email"><br>
+		<label>비밀번호</label><input type = "password" required name="password" id = "pw1"><br>
+		<label>비밀번호 확인</label><input type = "password" required  id="pw2" onchange="pwValid();"><br>
+		<div id = "pw"></div>
+		<label>프로필사진</label><input type = "file" required name = "profile" id="profile" onchange="thumbnail();">
+		<div class = "imgBox"></div>
+		<input type="hidden" th:name="${_csrf.parameterName}"
+						th:value="${_csrf.token}" />
+		<input type = "submit" value="등록" id="submit" onclick = "submitCheck(event);" >
+	</form>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+	var pwCheck = false;
+	function pwValid(){
+		var pw1 = document.querySelector("#pw1").value;
+		var pw2 = document.querySelector("#pw2").value;
+		if(pw1==pw2){
+			document.querySelector("#pw").innerHTML="<p style='color:blue;font-size:0.5rem;text-aligan:center;'>비밀번호가 일치합니다.</p>";
+			pwCheck=true;
+		}else{
+			document.querySelector("#pw").innerHTML="<p style='color:red;font-size:0.5rem;text-aligan:center;'>비밀번호가 일치하지 않습니다.</p>";
+			pwCheck = false;
+		}
+	}
+	function submitCheck(event){
+		
+		if(pwCheck){
+			$(this).unbind();
+			$("#signUpFrm").submit();
+		}else{
+			event.preventDefault();
+			alert("비밀번호를 확인해주세요.");
+			
+		}
+	}
+	function thumbnail(){
+		var image = document.querySelector('#profile').files[0];
+		var reader = new FileReader();
+		
+		reader.onload = function(event){
+			var img = document.createElement("img");
+			console.log(event.target.result);
+			img.setAttribute("src",event.target.result);
+			document.querySelector(".imgBox").appendChild(img);
+		};
+		
+		reader.readAsDataURL(image);
+	}
+	
+</script>
+</body>
+</html>

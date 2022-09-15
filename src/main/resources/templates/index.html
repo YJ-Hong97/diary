@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.tymeleaf.org">
+<th:block th:fragment="index">
+	<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap"
+	rel="stylesheet">
+<title>교환일기 책장</title>
+	</head>
+	<style>
+.indexContainer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	z-index: 1;
+	font-family: 'Nanum Myeongjo';
+}
+
+.bookBox {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border: 0.2rem solid black;
+	border-radius: 3%;
+	text-align: center;
+	width: 30vw;
+	height: 90vh;
+}
+
+.bookBox tr {
+	display: inline-block;
+	width: 95%;
+	height: 11vh;
+	margin: 1%;
+	border: 0.2rem solid black;
+	border-radius: 3%;
+}
+
+#myDiary {
+	width: 1vw;
+	height: 10vh;
+	writing-mode: vertical-rl;
+	text-orientation: upright;
+	border: 0.2rem solid black;
+	border-radius: 3%;
+	background-color: lightblue;
+	cursor: pointer;
+}
+
+.indexContainer #table {
+	position: absolute;
+	left: 20%;
+	top: 85%;
+	transform: translate(-50%, -50%);
+	width: 10vw;
+}
+
+.indexContainer #email {
+	width: 5vw;
+	position: absolute;
+	top: 75%;
+	left: 20%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	cursor: pointer;
+}
+
+.indexContainer #openEmail {
+	width: 5vw;
+	position: absolute;
+	top: 75%;
+	left: 20%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	display: none;
+	cursor: pointer;
+}
+
+.indexContainer #mailBox {
+	position: absolute;
+	left: 10%;
+	top: 80%;
+	transform: translate(-50%, -50%);
+	width: 15vw;
+	cursor: pointer;
+}
+
+.indexContainer .writeEmail {
+	display :none;
+	position: absolute;
+	top: 50%;
+	left: 10%;
+	transform: translate(0, -50%);
+	width: 20vw;
+	border: 0.1rem solid;
+	padding: 1%;
+	background-color: white;
+}
+
+.writeEmail #sendEmail {
+	border: 0;
+	background-color: white;
+	margin-left: 80%;
+	cursor: pointer;
+}
+.indexContainer #pushBox{
+	border-radius: 50%;
+	background-color: red;
+	color:white;
+	width:2rem;
+	height:2rem;
+	position:absolute;
+	top:65%;
+	left:10%;
+	transform:translate(-50%,-50%);
+	text-align: center;
+}
+.indexContainer #letterBox{
+	display:none;
+	position:absolute;
+	bottom:40%;
+	left:10%;
+	transform:translate(-50%,-50%);
+	width:20vw;
+}
+#letterBox table{
+	margin-left:auto;
+	margin-right:auto;
+	border:.01rem solid;
+	padding:1%;
+}
+
+.bookBox .friends{
+	width: 1vw;
+	height: 10vh;
+	writing-mode: vertical-rl;
+	text-orientation: upright;
+	border: 0.2rem solid black;
+	border-radius: 3%;
+	background-color: pink;
+	cursor: pointer;
+}
+
+</style>
+	<body>
+		<div class="indexContainer">
+			<div class="bookConatiner">
+				<table class="bookBox">
+
+					<tr>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+					<tr >
+						<td th:if = "${session.bookList!=null}" th:each = "book:${session.bookList}"class = "friends"th:value = "${book.email}">[[${book.name}]]</td>
+						<td th:if ="${session.user!=null}"id = "myDiary">[[${session.user.name}]]</td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+			<div class="mailBox">
+				<img src="/images/mailbox.png" id="mailBox">
+				<div th:if ="${session.user!=null&&session.user.push!=0}"id = "pushBox"><p th:if="${session.user.push!=0}"th:text = "${session.user.push}"></p></div>
+				<div id = "letterBox">
+					<table id= "tblLetter">
+						<thead>
+							<th>보낸이</th>
+							<th>제목</th>
+							<th></th>
+						</thead>
+						<tr th:each="letter:${letters}">
+							<td th:if = "${letter.approve==null}">[[${letter.from.name}]]</td>
+							<td th:if = "${letter.approve==null}">[[${letter.content}]]</td>
+							<td th:if = "${letter.approve==null}"><button type = "button" class ="accept" th:value = "${letter.letterId}" >수락</button><button type = "button" class = "deny"th:value = "${letter.letterId}" th:email = "${letter.from.email}">거절</button></td>
+						</tr>
+						<tr th:each="deny:${denys}">
+							<td>[[${deny.to.name}]]</td>
+							<td>[[${deny.to.name}]]님이 거절하셨습니다.</td>
+							<td><button type = "button" class = "btnDeny" th:value = "${deny.letterId}">확인</button></td>
+						</tr>
+						<tr th:each="reply:${replies}">
+							<td>[[${reply.from.name}]]</td>
+							<td>[[${reply.content}]]</td>
+							<td><button type = "button" class ="confirm" th:value = "${reply.letterId}" >댓글 보기</button><button type = "button" class = "lazyConfirm" th:value = "${reply.letterId}">나중에</button></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="table">
+				<img src="/images/round-table.png" id="table"> <img
+					src="/images/email.png" id="email"> <img
+					src="/images/email (1).png" id="openEmail">
+			</div>
+			<div class="writeEmail">
+					<label>이메일:</label><input type="text" name="email" id="writeEmail">
+					<input type="button" value="전송>>" id="sendEmail">
+			</div>
+		</div>
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+		<script th:inline= "javascript">
+			const socket = new SockJS('/websocket');
+			if(/*[[${session.user}]]*/"default"!=null){
+				var email = /*[[${session.user.email}]]*/"default";
+				
+				
+				
+			  	stomp = Stomp.over(socket);
+			   	stomp.connect({},function(){
+			   		stomp.subscribe(`/sub/email/${email}`,function(data){
+			   			var push = data.body.push;
+			   			var letter = data.body.letter;
+			   			
+			   			$("#tblLetter").append(`<tr><td>${letter.from}</td>친구하자!<td></td><button class ='accept' th:value =${letter.letterId} type = 'button'>수락</button><button class = 'deny' th:value = ${letter.letterId} type = 'button'>거절</button><td></td></tr>`)
+			   			$("#pushBox").append(`<p>${push}</p>`);
+			   		});
+			   		stomp.subscribe(`/sub/deny/${email}`,function(data){
+			   			location.href = "/index";
+			   		});
+			   	});
+			}
+			
+			$("#myDiary").click(function() {
+				location.href = "/writeMyDiary";
+			});
+			$("#email").click(function() {
+				$("#email").css({
+					"display" : "none"
+				});
+				$("#openEmail").css({
+					"display" : "block"
+				});
+				$(".writeEmail").css({"display":"block"});
+			});
+			$("#openEmail").click(function() {
+				$("#email").css({
+					"display" : "block"
+				});
+				$("#openEmail").css({
+					"display" : "none"
+				});
+				$(".writeEmail").css({"display":"none"});
+			});
+			$("#sendEmail").click(function(){
+				let yourEmail = $("#writeEmail").val();
+				stomp.send(`/pub/email/${yourEmail}`,{},JSON.stringify({from:email,to:yourEmail}));
+			});
+			$("#mailBox").click(function(){
+				if($("#letterBox").css("display") == "none"){
+					document.querySelector("#letterBox").style.display = "block";
+				}else{
+					document.querySelector("#letterBox").style.display = "none";
+				}
+			});
+			$(".accept").click(function(){
+				let letterId = $(this).attr("value");
+				location.href = `/accept/${letterId}`;
+			});
+			$(".deny").click(function(){
+				let letterId = $(this).attr("value");
+				let from = $(this).attr("email");
+				
+				$.ajax({
+					url:`/deny/${letterId}`,
+					type:"get",
+					success:function(){
+						stomp.send(`/pub/deny`,{},JSON.stringify({
+							"letterId":letterId
+						}));
+						location.href = "/index";
+					}
+				});
+				
+			});
+			$(".friends").click(function(){
+				var yourEmail = $(this).attr("value");
+				location.href = `/lookYourDiary/${yourEmail}`;
+			});
+			$(".btnDeny").click(function(){
+				var letterId = $(this).attr("value");
+				location.href = `/confirmDeny/${letterId}`;
+			});
+			$(".confirm").click(function(){
+				let letterId = $(this).attr("value");
+				location.href =  `/lookReply/${letterId}`;
+			});
+			$(".lazyConfirm").click(function(){
+				let letterId = $(this).attr("value");
+				location.href = `/lazyConfirm/${letterId}`;
+			});
+		</script>
+	</body>
+</th:block>
+</html>

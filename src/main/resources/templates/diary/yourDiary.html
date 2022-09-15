@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.tymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+<title>Write Today!</title>
+<style>
+	.todayContainer{
+		width:100%;
+		height: 100%;
+		margin:0 auto;
+	}
+	.tblToday{
+		width:40%;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top:2%;
+		font-family: 'Nanum Myeongjo';
+		font-size:2rem;
+		border:0.1rem solid;
+		padding:3%;
+	}
+	.tblToday input{
+		width:10vw;
+		border:0;
+		font-size:2rem;
+		font-family: 'Nanum Myeongjo';
+	}
+	.tblToday img{
+		float:right;
+	}
+	.tblToday .imgBox{
+		position:relative;
+		display:inline-block;
+		border:0.1rem solid;
+		width:15vw;
+		height: 30vh;
+		overflow: hidden;
+	}
+	.tblToday .imgBox img{
+		border-radius: 0;
+		
+	}
+	.contentBox .articleBox{
+		position:relative;
+		display:inline-block;
+		border:0.1rem solid;
+		width:15vw;
+		height: 30vh;
+		overflow: hidden;
+	}
+	.contentBox .articleBox img{
+			border-radius: 0;
+	}
+	.tblToday #content{
+		width:100%;
+		height: 30vh;
+		font-size: 1rem;
+		border: 0;
+		outline:none;
+		font-family: 'Nanum Myeongjo';
+	}
+	.tblToday #title{
+		outline:none;
+	}
+	.tblToday img{
+		border-radius: 50%;
+		cursor: pointer;
+	}
+	.todayContainer #calendar{
+		position:absolute;
+		left:10%;
+		top:10%;
+		transform:translate(-50%,-50%);
+		
+	}
+	.blue {
+		background-color: blue !important;
+		color:white !important;
+		border-radius: 50%;
+	}
+	.replyBox{
+		position:absolute;
+		top:50%;
+		left:85%;
+		transform:translate(-50%,-50%);
+		font-family: 'Nanum Myeongjo';
+		width:25vw;
+		height: 90%;
+	}
+	.replyBox img{
+		cursor: pointer;
+	}
+	.replyFrm{
+		display:none;
+		position:absolute;
+		top:0;
+		left:0;
+		width:100%;
+		height: 100%;
+		background-color: #DDDD;
+		text-align: center;
+	}   
+	
+.pagination {
+	
+	text-decoration: none;
+	list-style: none;
+}
+
+.pagination ul {
+	width: 100%;
+}
+
+.pagination li {
+	margin-left: 3rem;
+	display: inline-block;
+}
+	
+</style>
+</head>
+<body>
+<div class= "todayContainer">
+	<table class = "tblToday" th:if = "${diary!=null}">
+		<tr><td><label>제목:</label>
+			<input type ="text"name = "title" id = "title" th:value = "${diary.title}" readonly>
+			<img class = "weather"src = "/images/ac_unit_FILL0_wght400_GRAD0_opsz48.png" id = "snow">
+			<img class = "weather"src = "/images/cloud_FILL0_wght400_GRAD0_opsz48.png" id = "cloud">
+			<img class = "weather" src = "/images/rainy_FILL0_wght400_GRAD0_opsz48.png" id ="rainy">
+			<img class = "weather"src = "/images/sunny_FILL0_wght400_GRAD0_opsz48.png"id= "sunny">
+			<input type = "hidden" name = "weather" id = "weather" th:value = "${diary.weather}"readonly>
+		</td></tr>
+		<tr><td><div class = "contentBox">
+		<input type = "file" name = "photo" id ="photo" style="font-size:1rem;"><input type = "hidden" id = "article" name ="article"><br>
+		<div class = "imgBox"><img id = "photoImg" th:src = "${diary.photo}"></div>
+		<div class = "articleBox"><img id = "articleImg"th:src = "${diary.article}"></div></div></td></tr>
+		<tr><td><textarea readonly name = "content" id= "content"th:value = "${diary.content}"th:placeholder = "${diary.content}"></textarea></td></tr>
+	</table>
+	<div class = "calendarBox">
+		<input type = "text"th:if = "${diary==null}" id = "calendar" >
+		<input type = "text"th:if = "${diary!=null}" id = "calendar"  th:placeholder = "${diary.date.split(' ')[0]}"th:value = "${diary.date.split(' ')[0]}">
+	</div>
+	<div class = "replyBox">
+		<div><label>댓글 쓰기</label><img id = "writeReply" src ="/images/edit_square_FILL0_wght400_GRAD0_opsz48.png"></div>
+		<div class = "replies"th:each = "reply:${replies.result}">
+			<p th:text = "${reply.writer.name}"></p>
+			<p th:text = "${reply.date}"></p>
+			<p th:text = "${reply.content}"></p>
+			<hr>
+		</div>
+		<nav>
+				<ul class="pagination">
+					<li th:each="p:${replies.pageList}"><a
+					class = "replyPage" th:value = "${p.pageNumber}"+1>[[${p.pageNumber}+1]]</a></li>
+				</ul>
+			</nav>
+	</div>
+	<div class = "replyFrm">
+		<div  style = "padding:2%;width:30%; height:25%; background-color:white; position:absolute;top:50%; left:50%; transform:translate(-50%,-50%);">
+			<form action = "/writeReply" method = "post">
+				<button type = "button" id = "closeReply"style = "float:left;">X</button>
+				<input type = "hidden" name = "diaryNo" th:value = "${diary.diaryNo}">
+				<input readonly type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				<textarea style= "width:100%; height:20vh;"name = "content"id= "replyContent"></textarea>
+				<input type = "submit" value = "입력">
+			</form>
+		</div>
+	</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script th:inline = "javascript">
+var weather = null;
+if($("#weather").val().length!=0){
+	weather = $("#weather").val();
+	document.getElementById(weather).style.border = "0.2rem solid red";
+}
+	var diaryList = /*[[${diaryList}]]*/"default";
+	var dateList = [];
+	for(let i = 0; i<diaryList.length;i++){
+		let newDate = diaryList[i].date.split(' ')[0];
+		dateList.push(newDate.toString());
+	}
+	window.onload = function(){
+		$("#calendar").datepicker({dateFormat:"yy-mm-dd",beforeShowDay:function(date){
+			let yyyy = date.getFullYear();
+			let mm = date.getMonth()+1;
+			let dd = date.getDate();
+			let datestr = yyyy+"-"+String(mm).padStart(2,"0")+"-"+String(dd).padStart(2,"0");
+			if($.inArray(datestr,dateList)>-1){
+				return [true,"blue"];
+			}else{
+				return [false,""]
+			}
+		}});
+		
+	};
+	$("#calendar").change(function(){
+		let date = $("#calendar").val();
+		let yourEmail = diaryList[0].writer.email;
+		location.href = `/lookYourDiary/${yourEmail}/${date}`;
+	});
+	$(".imgBox img").click(function(){
+		if($(".imgBox").css("overflow")=="hidden"){
+			$(".imgBox").css({"overflow":"visible"});
+		}else{
+			$(".imgBox").css({"overflow":"hidden"});
+		}
+		
+	});
+	$(".articleBox").click(function(){
+		if($(".articleBox").css("overflow")=="hidden"){
+			$(".articleBox").css({"overflow":"visible","z-index":"5"});
+		}else{
+			$(".articleBox").css({"overflow":"hidden"});
+		}
+		
+	});
+	$("#writeReply").click(function(){
+		let replies = /*[[${replies.result.content}]]*/"default";
+		let member =/*[[${session.user}]]*/"default";
+		let reply = null;
+		for(let i =0; i<replies.length; i++){
+			if(replies[i].writer.email==member.email){
+				$("#replyContent").val(replies[i].content);
+			}
+		}
+		$(".replyFrm").css({"display":"block"});
+		
+	});
+	$("#closeReply").click(function(){
+		$(".replyFrm").css({"display":"none"});
+	});
+	$(".replyPage").click(function(){
+		let email = /*[[${diary.writer.email}]]*/"default";
+		let page = $(this).attr("value");
+		let date = /*[[${diary.date}]]*/"default";
+		location.href = `/lookYourDiary/${email}/${date}/${page}`; 
+	});
+</script>
+</body>
+</html>
