@@ -179,7 +179,7 @@
 				</table>
 			</div>
 			<div class="mailBox">
-				<img src="/images/mailbox.png" id="mailBox">
+				<img src="images/mailbox.png" id="mailBox">
 				<div th:if ="${session.user!=null&&session.user.push!=0}"id = "pushBox"><p th:if="${session.user.push!=0}"th:text = "${session.user.push}"></p></div>
 				<div id = "letterBox">
 					<table id= "tblLetter">
@@ -207,9 +207,9 @@
 				</div>
 			</div>
 			<div class="table">
-				<img src="/images/round-table.png" id="table"> <img
-					src="/images/email.png" id="email"> <img
-					src="/images/email (1).png" id="openEmail">
+				<img src="images/round-table.png" id="table"> <img
+					src="images/email.png" id="email"> <img
+					src="images/email (1).png" id="openEmail">
 			</div>
 			<div class="writeEmail">
 					<label>이메일:</label><input type="text" name="email" id="writeEmail">
@@ -224,7 +224,8 @@
 			src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 		<script th:inline= "javascript">
 			const socket = new SockJS('/websocket');
-			if(/*[[${session.user}]]*/"default"!=null){
+			var user = /*[[${session.user}]]*/"default";
+			if(user!=null){
 				var email = /*[[${session.user.email}]]*/"default";
 				
 				

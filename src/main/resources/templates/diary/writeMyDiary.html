@@ -127,14 +127,14 @@
 </head>
 <body>
 <div class= "todayContainer">
-	<form action="writeMyDiary" enctype = "multipart/form-data" method= "post">
+	<form action="/writeMyDiary" enctype = "multipart/form-data" method= "post">
 	<table class = "tblToday" th:if = "${diary==null}">
 		<tr><td><label>제목:</label>
 			<input type ="text"name = "title" id = "title">
-			<img class = "weather"src = "/images/ac_unit_FILL0_wght400_GRAD0_opsz48.png" id = "snow">
-			<img class = "weather"src = "/images/cloud_FILL0_wght400_GRAD0_opsz48.png" id = "cloud">
-			<img class = "weather" src = "/images/rainy_FILL0_wght400_GRAD0_opsz48.png" id ="rainy">
-			<img class = "weather"src = "/images/sunny_FILL0_wght400_GRAD0_opsz48.png"id= "sunny">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/ac_unit_FILL0_wght400_GRAD0_opsz48.png" id = "snow">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/cloud_FILL0_wght400_GRAD0_opsz48.png" id = "cloud">
+			<img class = "weather" src = "http://3.39.158.96:5555/images/rainy_FILL0_wght400_GRAD0_opsz48.png" id ="rainy">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/sunny_FILL0_wght400_GRAD0_opsz48.png"id= "sunny">
 			<input type = "hidden" name = "weather" id = "weather">
 		</td></tr>
 		<tr><td><div class = "contentBox">
@@ -148,10 +148,10 @@
 	<table class = "tblToday" th:if = "${diary!=null}">
 		<tr><td><label>제목:</label>
 			<input type ="text"name = "title" id = "title" th:value = "${diary.title}">
-			<img class = "weather"src = "/images/ac_unit_FILL0_wght400_GRAD0_opsz48.png" id = "snow">
-			<img class = "weather"src = "/images/cloud_FILL0_wght400_GRAD0_opsz48.png" id = "cloud">
-			<img class = "weather" src = "/images/rainy_FILL0_wght400_GRAD0_opsz48.png" id ="rainy">
-			<img class = "weather"src = "/images/sunny_FILL0_wght400_GRAD0_opsz48.png"id= "sunny">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/ac_unit_FILL0_wght400_GRAD0_opsz48.png" id = "snow">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/cloud_FILL0_wght400_GRAD0_opsz48.png" id = "cloud">
+			<img class = "weather" src = "http://3.39.158.96:5555/images/rainy_FILL0_wght400_GRAD0_opsz48.png" id ="rainy">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/sunny_FILL0_wght400_GRAD0_opsz48.png"id= "sunny">
 			<input type = "hidden" name = "weather" id = "weather" th:value = "${diary.weather}">
 		</td></tr>
 		<tr><td><div class = "contentBox">
@@ -159,7 +159,7 @@
 		<div class = "imgBox"><img id = "photoImg" th:src = "${diary.photo}"></div>
 		<div class = "articleBox"><img id = "articleImg"th:src = "${diary.article}"></div></div>
 		</td></tr>
-		<tr><td><textarea name = "content" id= "content"th:value = "${diary.content}"th:placeholder = "${diary.content}"></textarea></td></tr>
+		<tr><td><textarea name = "content" id= "content">[[${diary.content}]]</textarea></td></tr>
 		<tr><td><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type = "submit" value ="저장"></td></tr>
 	</table>
 	</form>
@@ -168,7 +168,7 @@
 		<input type = "text"th:if = "${diary!=null}" id = "calendar"  th:placeholder = "${diary.date.split(' ')[0]}"th:value = "${diary.date.split(' ')[0]}">
 	</div>
 	<div th:if ="${replies!=null}"class = "replyBox">
-		<div><label>댓글</label><img id = "writeReply" src ="/images/edit_square_FILL0_wght400_GRAD0_opsz48.png"></div>
+		<div><label>댓글</label><img id = "writeReply" src ="http://3.39.158.96:5555/images/edit_square_FILL0_wght400_GRAD0_opsz48.png"></div>
 		<div class = "replies"th:each = "reply:${replies.result}">
 			<p th:text = "${reply.writer.name}"></p>
 			<p th:text = "${reply.date}"></p>
@@ -296,7 +296,11 @@
 	}
 	$(".replyPage").click(function(){
 		let page = $(this).attr("value");
-		let date = /*[[${diary.date}]]*/"default";
+		let diary = /*[[${diary}]]*/"default";
+		let date = null;
+		if(diary !=null){
+			date = diary.date;
+		}
 		location.href = `/lookMyDiary/${date}/${page}`;
 	});
 </script>

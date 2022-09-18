@@ -127,10 +127,10 @@
 	<table class = "tblToday" th:if = "${diary!=null}">
 		<tr><td><label>제목:</label>
 			<input type ="text"name = "title" id = "title" th:value = "${diary.title}" readonly>
-			<img class = "weather"src = "/images/ac_unit_FILL0_wght400_GRAD0_opsz48.png" id = "snow">
-			<img class = "weather"src = "/images/cloud_FILL0_wght400_GRAD0_opsz48.png" id = "cloud">
-			<img class = "weather" src = "/images/rainy_FILL0_wght400_GRAD0_opsz48.png" id ="rainy">
-			<img class = "weather"src = "/images/sunny_FILL0_wght400_GRAD0_opsz48.png"id= "sunny">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/ac_unit_FILL0_wght400_GRAD0_opsz48.png" id = "snow">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/cloud_FILL0_wght400_GRAD0_opsz48.png" id = "cloud">
+			<img class = "weather" src = "http://3.39.158.96:5555/images/rainy_FILL0_wght400_GRAD0_opsz48.png" id ="rainy">
+			<img class = "weather"src = "http://3.39.158.96:5555/images/sunny_FILL0_wght400_GRAD0_opsz48.png"id= "sunny">
 			<input type = "hidden" name = "weather" id = "weather" th:value = "${diary.weather}"readonly>
 		</td></tr>
 		<tr><td><div class = "contentBox">
@@ -144,7 +144,7 @@
 		<input type = "text"th:if = "${diary!=null}" id = "calendar"  th:placeholder = "${diary.date.split(' ')[0]}"th:value = "${diary.date.split(' ')[0]}">
 	</div>
 	<div class = "replyBox">
-		<div><label>댓글 쓰기</label><img id = "writeReply" src ="/images/edit_square_FILL0_wght400_GRAD0_opsz48.png"></div>
+		<div><label>댓글 쓰기</label><img id = "writeReply" src ="http://3.39.158.96:5555/images/edit_square_FILL0_wght400_GRAD0_opsz48.png"></div>
 		<div class = "replies"th:each = "reply:${replies.result}">
 			<p th:text = "${reply.writer.name}"></p>
 			<p th:text = "${reply.date}"></p>

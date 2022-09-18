@@ -1,22 +1,17 @@
 package com.sosuyu.diary.diary;
 
-import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.time.LocalDate;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.modelmbean.ModelMBeanNotificationBroadcaster;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import javax.websocket.server.PathParam;
 
 import org.json.simple.JSONObject;
-import org.junit.validator.PublicClassValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,7 +63,7 @@ public class DiaryController {
 		});
 		List<DiaryVO> diaryList = diaryRepository.findByWriter(member);
 		mnv.addObject("diaryList",diaryList);
-		mnv.setViewName("/diary/writeMyDiary");
+		mnv.setViewName("diary/writeMyDiary");
 		return mnv;
 	}
 	@GetMapping("/lookMyDiary/{date}")
@@ -82,7 +77,7 @@ public class DiaryController {
 		mnv.addObject("replies",new PageMaker<>(replies));
 		mnv.addObject("diary",diary);
 		mnv.addObject("diaryList",diaryList);
-		mnv.setViewName("/diary/writeMyDiary");
+		mnv.setViewName("diary/writeMyDiary");
 		return mnv;
 		
 	}
@@ -97,7 +92,7 @@ public class DiaryController {
 		mnv.addObject("replies",new PageMaker<>(replies));
 		mnv.addObject("diary",diary);
 		mnv.addObject("diaryList",diaryList);
-		mnv.setViewName("/diary/writeMyDiary");
+		mnv.setViewName("diary/writeMyDiary");
 		return mnv;
 		
 	}
@@ -153,7 +148,7 @@ public class DiaryController {
 		map.put("push", member.getPush());
 		map.put("letter", letter);
 		
-		template.convertAndSend("/sub/email/"+myEmail,map);
+		template.convertAndSend("sub/email/"+myEmail,map);
 	}
 	@GetMapping("/accept/{letterId}")
 	public ModelAndView accept(ModelAndView mnv, HttpSession session, @PathVariable("letterId")Long letterId) {
@@ -186,7 +181,7 @@ public class DiaryController {
 		mnv.addObject("replies",new PageMaker<>(replies));
 		mnv.addObject("diary",lastDiary);
 		mnv.addObject("diaryList",yourList);
-		mnv.setViewName("/diary/yourDiary");
+		mnv.setViewName("diary/yourDiary");
 		return mnv;
 		
 	}
@@ -202,7 +197,7 @@ public class DiaryController {
 		mnv.addObject("replies",new PageMaker<>(replies));
 		mnv.addObject("diary",diary);
 		mnv.addObject("diaryList",diaryList);
-		mnv.setViewName("/diary/yourDiary");
+		mnv.setViewName("diary/yourDiary");
 		return mnv;
 		
 	}
@@ -218,7 +213,7 @@ public class DiaryController {
 		mnv.addObject("replies",new PageMaker<>(replies));
 		mnv.addObject("diary",diary);
 		mnv.addObject("diaryList",diaryList);
-		mnv.setViewName("/diary/yourDiary");
+		mnv.setViewName("diary/yourDiary");
 		return mnv;
 		
 	}
@@ -226,7 +221,7 @@ public class DiaryController {
 	public void denyUpdate(JSONObject object) {
 		Long letterId =Long.parseLong(object.get("letterId").toString());
 		String email = letterRepository.findById(letterId).get().getFrom().getEmail();
-		template.convertAndSend("/sub/deny/"+email,object);
+		template.convertAndSend("sub/deny/"+email,object);
 	}
 	@Transactional
 	@GetMapping("/confirmDeny/{letterId}")

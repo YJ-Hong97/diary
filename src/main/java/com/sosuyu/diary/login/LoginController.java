@@ -59,13 +59,13 @@ public class LoginController {
 		}
 		mnv.addObject("email",email);
 		mnv.addObject("profile",profile);
-		mnv.setViewName("/auth/login");
+		mnv.setViewName("auth/login");
 		return mnv;
 	}
 	
 	@GetMapping("/auth/signUp")
 	public ModelAndView signUp(ModelAndView mnv) {
-		mnv.setViewName("/auth/signUp");
+		mnv.setViewName("auth/signUp");
 		return mnv;
 	}
 	@PostMapping("/auth/signUp")
@@ -92,6 +92,8 @@ public class LoginController {
 		List<Letter> denys = letterRepository.findByFromAndApprove(member, letterApprove.DENY);
 		List<Letter> replies = letterRepository.findByToAndTypeAndApprove(member, LetterType.REPLY, null);
 		member.setPush(letters.size()+denys.size()+replies.size());
+		log.info("----------------------");
+		log.info(letters.toString());
 		memberRepository.save(member);
 		List<Member> bookList = new ArrayList<>();
 		letterRepository.findByToAndApprove(member, letterApprove.ACCEPT).forEach(l->{
@@ -113,7 +115,7 @@ public class LoginController {
 		mnv.addObject("bookList",bookList);
 		mnv.addObject("letters",letters);
 		mnv.addObject("replies",replies);
-		mnv.setViewName("/index");
+		mnv.setViewName("index");
 		return mnv;
 	}
 }
