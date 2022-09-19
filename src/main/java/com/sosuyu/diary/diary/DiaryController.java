@@ -148,7 +148,7 @@ public class DiaryController {
 		map.put("push", member.getPush());
 		map.put("letter", letter);
 		
-		template.convertAndSend("sub/email/"+myEmail,map);
+		template.convertAndSend("/sub/email/"+myEmail,map);
 	}
 	@GetMapping("/accept/{letterId}")
 	public ModelAndView accept(ModelAndView mnv, HttpSession session, @PathVariable("letterId")Long letterId) {
@@ -221,7 +221,7 @@ public class DiaryController {
 	public void denyUpdate(JSONObject object) {
 		Long letterId =Long.parseLong(object.get("letterId").toString());
 		String email = letterRepository.findById(letterId).get().getFrom().getEmail();
-		template.convertAndSend("sub/deny/"+email,object);
+		template.convertAndSend("/sub/deny/"+email,object);
 	}
 	@Transactional
 	@GetMapping("/confirmDeny/{letterId}")
