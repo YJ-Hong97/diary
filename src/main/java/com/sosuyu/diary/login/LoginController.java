@@ -92,12 +92,13 @@ public class LoginController {
 		List<Letter> denys = letterRepository.findByFromAndApprove(member, letterApprove.DENY);
 		List<Letter> replies = letterRepository.findByToAndTypeAndApprove(member, LetterType.REPLY, null);
 		member.setPush(letters.size()+denys.size()+replies.size());
-		log.info("----------------------");
-		log.info(letters.toString());
 		memberRepository.save(member);
 		List<Member> bookList = new ArrayList<>();
 		letterRepository.findByToAndApprove(member, letterApprove.ACCEPT).forEach(l->{
-			bookList.add(l.getFrom());
+			if(!bookList.contains(l.getFrom())) {
+				bookList.add(l.getFrom());
+			}
+			
 		});
 		letterRepository.findByFromAndApprove(member, letterApprove.ACCEPT).forEach(l->{
 			if(!bookList.contains(l.getTo())) {
@@ -116,6 +117,12 @@ public class LoginController {
 		mnv.addObject("letters",letters);
 		mnv.addObject("replies",replies);
 		mnv.setViewName("index");
+		return mnv;
+	}
+	@GetMapping("/logout")
+	public ModelAndView logout(ModelAndView mnv, HttpSession session) {
+		session.removeAttribute("user");
+		mnv.setViewName("redirect:/auth/login");
 		return mnv;
 	}
 }

@@ -241,11 +241,13 @@
 		dateList.push(newDate.toString());
 	}
 	window.onload = function(){
+		console.log(dateList);
 		$("#calendar").datepicker({dateFormat:"yy-mm-dd",beforeShowDay:function(date){
 			let yyyy = date.getFullYear();
 			let mm = date.getMonth()+1;
 			let dd = date.getDate();
-			let datestr = yyyy+"-"+String(mm).padStart(2,"0")+"-"+String(dd).padStart(2,"0");
+			let datestr = yyyy+"."+String(mm).padStart(2,"0")+"."+String(dd).padStart(2,"0");
+			console.log(datestr);
 			if($.inArray(datestr,dateList)>-1){
 				return [true,"blue"];
 			}else{
